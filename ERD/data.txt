@@ -1,0 +1,22 @@
+Users
+- id int
+- name varchar
+- occupation varchar
+- email varchar
+- password_hash varchar
+- avatar_file_name varchar
+- role varchar
+- token varchar
+created_at datetime
+updated_at datetime
+
+Campaings
+-
+-
+-
+-
+m
+
+Camppaingn Imagess
+transaction
+
