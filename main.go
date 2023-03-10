@@ -16,6 +16,7 @@ func main() {
 	dsn := "root:@tcp(127.0.0.1:3306)/startup_bwa?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
+	// cheking database connection
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -34,6 +35,7 @@ func main() {
 
 	// metode POST, GET, Update dan Delete
 	api.POST("/users", userHandler.RegisterUser)
+	api.POST("/session", userHandler.Login)
 
 	// router menjalankan GIN
 	router.Run()
