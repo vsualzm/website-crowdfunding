@@ -36,6 +36,7 @@ func main() {
 	// metode POST, GET, Update dan Delete
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/session", userHandler.Login)
+	api.POST("/email_chekers", userHandler.CheckEmailAvailability)
 
 	// router menjalankan GIN
 	router.Run()
