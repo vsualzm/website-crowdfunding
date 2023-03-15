@@ -27,6 +27,10 @@ func main() {
 	// inisiasi Repository, service , handler
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
+
+	// manual
+	//userService.SaveAvatar(6, "images/20-profile.png")
+
 	userHandler := handler.NewUserHandler(userService)
 
 	// pemanggilan router API
@@ -37,6 +41,7 @@ func main() {
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/session", userHandler.Login)
 	api.POST("/email_chekers", userHandler.CheckEmailAvailability)
+	api.POST("/avatars", userHandler.UploadAvatar)
 
 	// router menjalankan GIN
 	router.Run()
