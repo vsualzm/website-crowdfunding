@@ -5,16 +5,18 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vsualzm/website-crowfunding/auth"
 	"github.com/vsualzm/website-crowfunding/helper"
 	"github.com/vsualzm/website-crowfunding/user"
 )
 
 type userHandler struct {
 	userService user.Service
+	authService auth.Service
 }
 
-func NewUserHandler(userService user.Service) *userHandler {
-	return &userHandler{userService}
+func NewUserHandler(userService user.Service, authService auth.Service) *userHandler {
+	return &userHandler{userService, authService}
 }
 
 func (h *userHandler) RegisterUser(c *gin.Context) {
@@ -44,9 +46,15 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// token, err := h.jwtService.GenerateToken()
+	// membuat token
+	token, err := h.authService.GenerateToken(newUser.ID)
+	if err != nil {
+		response := helper.APIResponse("Register Account Failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
-	formatter := user.FormatUser(newUser, "TOKEN DI SINI ")
+	formatter := user.FormatUser(newUser, token)
 
 	// helper output
 	response := helper.APIResponse("Account has been registered", http.StatusOK, "succes", formatter)
@@ -83,7 +91,14 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	formatter := user.FormatUser(loggedinUser, "tokenb token")
+	token, err := h.authService.GenerateToken(loggedinUser.ID)
+	if err != nil {
+		response := helper.APIResponse("Login Failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	formatter := user.FormatUser(loggedinUser, token)
 	response := helper.APIResponse("Succesfully Loggein", http.StatusOK, "success", formatter)
 
 	c.JSON(http.StatusOK, response)

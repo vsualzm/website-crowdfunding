@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vsualzm/website-crowfunding/auth"
 	"github.com/vsualzm/website-crowfunding/handler"
 	"github.com/vsualzm/website-crowfunding/user"
 	"gorm.io/driver/mysql"
@@ -28,10 +29,12 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 
+	authService := auth.NewService()
+
 	// manual
 	//userService.SaveAvatar(6, "images/20-profile.png")
 
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(userService, authService)
 
 	// pemanggilan router API
 	router := gin.Default()
