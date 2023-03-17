@@ -8,6 +8,7 @@ type Repository interface {
 	FindByEmail(email string) (User, error)
 	FindById(ID int) (User, error)
 	Update(user User) (User, error)
+	// Delete(ID int) (User, error)
 }
 
 type repository struct {

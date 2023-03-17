@@ -168,7 +168,11 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 
 	// harus nya dapett dari jwt
 	// ini ketika kita menentukan sendiri tidak ada jwt
-	userID := 2
+
+	// baru
+	currentUser := c.MustGet("currentUser").(user.User)
+	userID := currentUser.ID
+
 	// path dimana kalian menerntukan penyimpanan gambar
 	path := fmt.Sprintf("images/%d-%s", userID, file.Filename)
 
