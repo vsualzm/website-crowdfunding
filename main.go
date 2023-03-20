@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -8,6 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/vsualzm/website-crowfunding/auth"
+	"github.com/vsualzm/website-crowfunding/campaign"
 	"github.com/vsualzm/website-crowfunding/handler"
 	"github.com/vsualzm/website-crowfunding/helper"
 	"github.com/vsualzm/website-crowfunding/user"
@@ -28,21 +30,42 @@ func main() {
 
 	// migrate database
 	db.AutoMigrate(&user.User{})
+	db.AutoMigrate(&campaign.Campaign{})
+	db.AutoMigrate(&campaign.CampaignImage{})
 
 	// inisiasi Repository, service , handler
 	userRepository := user.NewRepository(db)
+	campaignRepository := campaign.NewRepository(db)
+
+	// campaigns, err := campaignRepository.FindAll()
+	cekId, err := campaignRepository.FindByUserID(1)
+	fmt.Println(cekId)
+	fmt.Println("debug")
+	fmt.Println("debug")
+	fmt.Println("debug")
+	fmt.Println("debug")
+	// panjangnya isinya campaign
+	fmt.Println(len(cekId))
+	for _, kempen := range cekId {
+		fmt.Println(kempen.Name)
+		if len(kempen.CampaignImages) > 0 {
+			fmt.Println("jumlah gambar")
+			fmt.Println(len(kempen.CampaignImages))
+			fmt.Println(kempen.CampaignImages[0].FileName)
+		}
+
+	}
+
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 
 	// cek token dengan manual
 	// token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNn0.Cw3D1z9hd5PEK87wc0dahk47C2no1GvWJtPziFS3lAk")
-
 	// if err != nil {
 	// 	fmt.Println("ERROR")
 	// 	fmt.Println("ERROR")
 	// 	fmt.Println("ERROR")
 	// }
-
 	// if token.Valid {
 	// 	fmt.Println("VALID")
 	// 	fmt.Println("VALID")
@@ -71,6 +94,8 @@ func main() {
 	router.Run()
 
 }
+
+// middleware
 
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
