@@ -37,26 +37,30 @@ func main() {
 	userRepository := user.NewRepository(db)
 	campaignRepository := campaign.NewRepository(db)
 
-	// campaigns, err := campaignRepository.FindAll()
-	cekId, err := campaignRepository.FindByUserID(1)
-	fmt.Println(cekId)
-	fmt.Println("debug")
-	fmt.Println("debug")
-	fmt.Println("debug")
-	fmt.Println("debug")
-	// panjangnya isinya campaign
-	fmt.Println(len(cekId))
-	for _, kempen := range cekId {
-		fmt.Println(kempen.Name)
-		if len(kempen.CampaignImages) > 0 {
-			fmt.Println("jumlah gambar")
-			fmt.Println(len(kempen.CampaignImages))
-			fmt.Println(kempen.CampaignImages[0].FileName)
-		}
-
-	}
+	// // campaigns, err := campaignRepository.FindAll()
+	// cekId, err := campaignRepository.FindByUserID(1)
+	// // fmt.Println(cekId)
+	// fmt.Println("debug")
+	// fmt.Println("debug")
+	// fmt.Println("debug")
+	// fmt.Println("debug")
+	// // panjangnya isinya campaign
+	// fmt.Println(len(cekId))
+	// for _, kempen := range cekId {
+	// 	fmt.Println(kempen.Name)
+	// 	if len(kempen.CampaignImages) > 0 {
+	// 		fmt.Println("jumlah gambar")
+	// 		fmt.Println(len(kempen.CampaignImages))
+	// 		fmt.Println(kempen.CampaignImages[0].FileName)
+	// 	}
+	// }
 
 	userService := user.NewService(userRepository)
+	campaignService := campaign.NewService(campaignRepository)
+
+	campaigns, _ := campaignService.FindCampaigns(0)
+	fmt.Println(len(campaigns))
+
 	authService := auth.NewService()
 
 	// cek token dengan manual
