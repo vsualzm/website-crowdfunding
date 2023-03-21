@@ -56,9 +56,7 @@ func main() {
 
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
-
 	campaignHandler := handler.NewCampaignHandler(campaignService)
-
 	authService := auth.NewService()
 
 	// cek token dengan manual
