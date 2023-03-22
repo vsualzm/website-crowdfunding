@@ -82,6 +82,7 @@ func main() {
 
 	// pemanggilan router API
 	router := gin.Default()
+	router.Static("/images", "./images")
 	api := router.Group("/api/v1")
 
 	// metode POST, GET, Update dan Delete
