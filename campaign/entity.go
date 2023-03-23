@@ -1,6 +1,10 @@
 package campaign
 
-import "time"
+import (
+	"time"
+
+	"github.com/vsualzm/website-crowfunding/user"
+)
 
 type Campaign struct {
 	ID               int
@@ -16,6 +20,7 @@ type Campaign struct {
 	CreatedAt        time.Time
 	UpdateAt         time.Time
 	CampaignImages   []CampaignImage
+	User             user.User
 }
 
 type CampaignImage struct {

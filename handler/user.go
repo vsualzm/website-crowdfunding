@@ -41,7 +41,7 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 	newUser, err := h.userService.RegisterUserInput(input)
 
 	if err != nil {
-		response := helper.APIResponse("Register Account Failed", http.StatusBadRequest, "error", nil)
+		response := helper.APIResponse("Register Account Failed-", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -160,7 +160,7 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 	// kondisi ketika tidak bisa upload
 	if err != nil {
 		data := gin.H{"is_uploaded": false}
-		response := helper.APIResponse("Failed to upload avatar image", http.StatusBadRequest, "error", data)
+		response := helper.APIResponse("Failed to upload avatar imagee", http.StatusBadRequest, "error", data)
 
 		c.JSON(http.StatusBadRequest, response)
 		return
