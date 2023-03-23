@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vsualzm/website-crowfunding/campaign"
 	"github.com/vsualzm/website-crowfunding/helper"
+	"github.com/vsualzm/website-crowfunding/user"
 )
 
 // tangkap parameter di handler
@@ -69,3 +70,40 @@ func (h *campaignHandler) GetCampaign(c *gin.Context) {
 //handler :mapping id yang di url ke struct input => service, callformater
 // service : inputnya struct input => menangkap id di url manggil ke repo
 // repository 	getcampaignbyid
+
+// create campaign
+// tangkap parameter dari user ke input struct
+// ambil current dari jwt atau dari handler
+// panggil service , parameternya input struct
+// panggil repository untuk simpan data campaign baru
+
+func (h *campaignHandler) CreateCampaign(c *gin.Context) {
+	var input campaign.CreateCampaignInput
+
+	err := c.ShouldBindJSON(&input)
+
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": errors}
+
+		response := helper.APIResponse("Failed to create campaign", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	input.User = currentUser
+
+	newCampaign, err := h.service.CreateCampaign(input)
+	if err != nil {
+		response := helper.APIResponse("Failed to create campaign", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("Success to create campaign", http.StatusOK, "success", campaign.FormatCampaign(newCampaign))
+	c.JSON(http.StatusOK, response)
+
+}
