@@ -36,47 +36,10 @@ func main() {
 	userRepository := user.NewRepository(db)
 	campaignRepository := campaign.NewRepository(db)
 
-	// // campaigns, err := campaignRepository.FindAll()
-	// cekId, err := campaignRepository.FindByUserID(1)
-	// // fmt.Println(cekId)
-	// fmt.Println("debug")
-	// fmt.Println("debug")
-	// fmt.Println("debug")
-	// fmt.Println("debug")
-	// // panjangnya isinya campaign
-	// fmt.Println(len(cekId))
-	// for _, kempen := range cekId {
-	// 	fmt.Println(kempen.Name)
-	// 	if len(kempen.CampaignImages) > 0 {
-	// 		fmt.Println("jumlah gambar")
-	// 		fmt.Println(len(kempen.CampaignImages))
-	// 		fmt.Println(kempen.CampaignImages[0].FileName)
-	// 	}
-	// }
-
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 	authService := auth.NewService()
-
-	// cek token dengan manual
-	// token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNn0.Cw3D1z9hd5PEK87wc0dahk47C2no1GvWJtPziFS3lAk")
-	// if err != nil {
-	// 	fmt.Println("ERROR")
-	// 	fmt.Println("ERROR")
-	// 	fmt.Println("ERROR")
-	// }
-	// if token.Valid {
-	// 	fmt.Println("VALID")
-	// 	fmt.Println("VALID")
-	// 	fmt.Println("VALID")
-	// } else {
-	// 	fmt.Println("INVALID")
-	// 	fmt.Println("INVALID")
-	// 	fmt.Println("INVALID")
-	// }
-	// manual
-	//userService.SaveAvatar(6, "images/20-profile.png")
 
 	userHandler := handler.NewUserHandler(userService, authService)
 
@@ -93,7 +56,8 @@ func main() {
 
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
-	api.POST("/campaigns", authMiddleware(authService, userService), campaignHandler.GetCampaigns)
+	api.POST("/campaigns", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
+	api.PUT("/campaigns/:id", authMiddleware(authService, userService), campaignHandler.UpdateCampaign)
 
 	// router menjalankan GIN
 	router.Run()
@@ -156,3 +120,40 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 // ambil user_id
 // ambil user dari db berdasakan user_id lewat service
 // kita set context isinya user
+
+// cek token dengan manual
+// token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNn0.Cw3D1z9hd5PEK87wc0dahk47C2no1GvWJtPziFS3lAk")
+// if err != nil {
+// 	fmt.Println("ERROR")
+// 	fmt.Println("ERROR")
+// 	fmt.Println("ERROR")
+// }
+// if token.Valid {
+// 	fmt.Println("VALID")
+// 	fmt.Println("VALID")
+// 	fmt.Println("VALID")
+// } else {
+// 	fmt.Println("INVALID")
+// 	fmt.Println("INVALID")
+// 	fmt.Println("INVALID")
+// }
+// manual
+//userService.SaveAvatar(6, "images/20-profile.png")
+
+// // campaigns, err := campaignRepository.FindAll()
+// cekId, err := campaignRepository.FindByUserID(1)
+// // fmt.Println(cekId)
+// fmt.Println("debug")
+// fmt.Println("debug")
+// fmt.Println("debug")
+// fmt.Println("debug")
+// // panjangnya isinya campaign
+// fmt.Println(len(cekId))
+// for _, kempen := range cekId {
+// 	fmt.Println(kempen.Name)
+// 	if len(kempen.CampaignImages) > 0 {
+// 		fmt.Println("jumlah gambar")
+// 		fmt.Println(len(kempen.CampaignImages))
+// 		fmt.Println(kempen.CampaignImages[0].FileName)
+// 	}
+// }
