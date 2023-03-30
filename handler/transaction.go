@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vsualzm/website-crowfunding/helper"
 	"github.com/vsualzm/website-crowfunding/transaction"
+	"github.com/vsualzm/website-crowfunding/user"
 )
 
 // parameter di uri
@@ -32,6 +33,9 @@ func (h *TransactionHandler) GetCampaignTransactions(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+	input.User = currentUser
 
 	transactions, err := h.service.GetTransactionsByCampaignID(input)
 
