@@ -1,14 +1,27 @@
 package transaction
 
-import "time"
+import "gorm.io/gorm"
 
-type Transaction struct {
-	ID         int
-	CampaignID int
-	UserID     int
-	Amount     int
-	Status     string
-	Code       string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+type repository struct {
+	db *gorm.DB
+}
+
+type Repository interface {
+	GetByCampaignID(campaignID int) ([]Transaction, error)
+}
+
+func NewRepository(db *gorm.DB) *repository {
+	return &repository{db}
+}
+
+func (r *repository) GetByCampaignID(campaignID int) ([]Transaction, error) {
+	var transactions []Transaction
+
+	err := r.db.Preload("User").Where("campaign_id = ?", campaignID).Find(&transactions).Error
+
+	if err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/vsualzm/website-crowfunding/campaign"
 	"github.com/vsualzm/website-crowfunding/handler"
 	"github.com/vsualzm/website-crowfunding/helper"
+	"github.com/vsualzm/website-crowfunding/transaction"
 	"github.com/vsualzm/website-crowfunding/user"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -31,17 +32,21 @@ func main() {
 	db.AutoMigrate(&user.User{})
 	db.AutoMigrate(&campaign.Campaign{})
 	db.AutoMigrate(&campaign.CampaignImage{})
+	db.AutoMigrate(&transaction.Transaction{})
 
 	// inisiasi Repository, service , handler
 	userRepository := user.NewRepository(db)
 	campaignRepository := campaign.NewRepository(db)
+	transactionRepository := transaction.NewRepository(db)
 
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
-	campaignHandler := handler.NewCampaignHandler(campaignService)
 	authService := auth.NewService()
+	transactionService := transaction.NewService(transactionRepository)
 
 	userHandler := handler.NewUserHandler(userService, authService)
+	campaignHandler := handler.NewCampaignHandler(campaignService)
+	transactionHandler := handler.NewTransactionHandler(transactionService)
 
 	// pemanggilan router API
 	router := gin.Default()
@@ -49,6 +54,7 @@ func main() {
 	api := router.Group("/api/v1")
 
 	// metode POST, GET, Update dan Delete
+	// REST-API
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/session", userHandler.Login)
 	api.POST("/email_chekers", userHandler.CheckEmailAvailability)
@@ -59,6 +65,8 @@ func main() {
 	api.POST("/campaigns", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
 	api.PUT("/campaigns/:id", authMiddleware(authService, userService), campaignHandler.UpdateCampaign)
 	api.POST("/campaign-images", authMiddleware(authService, userService), campaignHandler.UploadImage)
+
+	api.GET("/campaigns/:id/transactions", authMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 
 	// router menjalankan GIN
 	router.Run()
